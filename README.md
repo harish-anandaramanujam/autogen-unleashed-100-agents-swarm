@@ -1,4 +1,4 @@
-# 100-Agent Orchestration with AutoGen
+# Autogen Unleashed 100 agents swarm
 
 ## Overview
 
@@ -41,7 +41,7 @@ This project demonstrates the orchestration of a large number of autonomous AI a
 
 ## Architecture Diagram
 
-![System Architecture Diagram](../../../../assets/architecture-diagram.png)
+![System Architecture Diagram](assets/architecture-diagram.png)
 
 ## How It Works
 1. The system starts a gRPC host and worker runtime.
