@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # Number of agents to create and orchestrate
-HOW_MANY_AGENTS = 5
+HOW_MANY_AGENTS = 100
 
 # Asynchronous function to create an agent, send a message, and write the response to a file
 async def create_and_message(worker, creator_id, i: int):
@@ -46,9 +46,14 @@ async def main():
     creator_id = AgentId("Creator", "default")
 
     # Prepare coroutines for creating and messaging multiple agents in parallel
-    coroutines = [create_and_message(worker, creator_id, i) for i in range(1, HOW_MANY_AGENTS+1)]
-    
-    # Run all coroutines concurrently
+    # This is avoid API rate limiting issues
+    semaphore = asyncio.Semaphore(25)  # Allow up to 25 concurrent tasks
+
+    async def limited_create_and_message(*args, **kwargs):
+        async with semaphore:
+            await create_and_message(*args, **kwargs)
+
+    coroutines = [limited_create_and_message(worker, creator_id, i) for i in range(1, HOW_MANY_AGENTS + 1)]
     await asyncio.gather(*coroutines)
     try:
         # Stop the worker and host after all tasks are complete
